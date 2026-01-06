@@ -14,7 +14,7 @@
   - repair : requested (요청 받음. 수리 전), in_progress (수리 중), completed (수리 완료)
 
 <p align="left">
-  <img src="images/MIProjectERD.jpg" alt="ERD" width="800">
+  <img src="images/ERD.jpg" alt="ERD" width="800">
 </p>
 
 
