@@ -1,0 +1,13 @@
+<form th:action="@{/users}" method="post" th:object="${userRequestDto}">
+    <input type="text" th:field="*{loginId}" placeholder="로그인 ID"/>
+    <input type="password" th:field="*{password}" placeholder="비밀번호"/>
+    <input type="text" th:field="*{name}" placeholder="이름"/>
+
+    <select th:field="*{role}">
+		<option value="ADMIN">관리자</option>
+        <option value="INSPECTOR">점검자</option>
+        <option value="REPAIR">수리자</option>
+    </select>
+
+    <button type="submit">생성</button>
+</form>
