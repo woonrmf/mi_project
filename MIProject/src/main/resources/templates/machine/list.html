@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>기계 목록</title>
+</head>
+<body>
+<h2>기계 목록</h2>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>이름</th>
+        <th>위치</th>
+        <th>상태</th>
+        <th>상세</th>
+    </tr>
+    <tr th:each="machine : ${mList}">
+        <td th:text="${machine.id}"></td>
+        <td th:text="${machine.name}"></td>
+        <td th:text="${machine.location}"></td>
+        <td th:text="${machine.status}"></td>
+        <td>
+            <a th:href="@{/machines/{id}(id=${machine.id})}">보기</a>
+        </td>
+    </tr>
+</table>
+
+<a th:href="@{/machines/admin/create}">[기계 생성]</a>
+</body>
+</html>

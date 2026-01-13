@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>기계 생성</title>
+</head>
+<body>
+<h2>기계 생성</h2>
+
+<form th:action="@{/machines/admin/create}" method="post" th:object="${machineRequestDto}">
+    <div>
+        <label>기계명</label>
+        <input type="text" th:field="*{name}">
+    </div>
+	
+	<div>
+	    <label>기계 코드</label>
+	    <input type="text" th:field="*{mCode}">
+	</div>
+
+    <div>
+        <label>위치</label>
+        <input type="text" th:field="*{location}">
+    </div>
+
+    <button type="submit">생성</button>
+</form>
+
+<a th:href="@{/machines/list}">목록으로</a>
+</body>
+</html>

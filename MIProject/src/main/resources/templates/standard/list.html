@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>기준 리스트</title>
+</head>
+<body>
+    <h1>기준 리스트</h1>
+    <a th:href="@{/standards/create}">새 기준 생성</a>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>이름</th>
+                <th>메모</th>
+                <th>상세</th>
+                <th>삭제</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="standard : ${getList}">
+                <td th:text="${standard.id}"></td>
+                <td th:text="${standard.name}"></td>
+                <td th:text="${standard.memo}"></td>
+                <td><a th:href="@{/standards/{id}(id=${standard.id})}">상세</a></td>
+                <td>
+                    <form th:action="@{/standards/delete/{id}(id=${standard.id})}" method="post">
+                        <button type="submit">삭제</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>기준 생성</title>
+</head>
+<body>
+    <h1>새 기준 생성</h1>
+    <form th:action="@{/standards/create}" method="post" th:object="${standardRequestDto}">
+        <label>이름: <input type="text" th:field="*{name}" /></label><br/>
+        <label>메모: <input type="text" th:field="*{memo}" /></label><br/>
+        <button type="submit">생성</button>
+    </form>
+    <p><a th:href="@{/standards/list}">리스트로 돌아가기</a></p>
+</body>
+</html>

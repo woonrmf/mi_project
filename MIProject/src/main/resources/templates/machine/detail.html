@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>기계 상세</title>
+</head>
+<body>
+<h2>기계 상세 정보</h2>
+
+<p>ID: <span th:text="${machine.id}"></span></p>
+<p>이름: <span th:text="${machine.name}"></span></p>
+<p>위치: <span th:text="${machine.location}"></span></p>
+<p>상태: <span th:text="${machine.status}"></span></p>
+
+<hr>
+
+<!-- 관리자: 기계 정보 수정 -->
+<form th:action="@{/machines/admin/{id}(id=${machine.id})}" method="post">
+    <input type="text" name="name" th:value="${machine.name}">
+    <input type="text" name="location" th:value="${machine.location}">
+    <button type="submit">정보 수정</button>
+</form>
+
+<hr>
+
+<!-- 관리자: 점검 요청 -->
+<div th:if="${machine.status.name() == 'NORMAL'}">
+    <form th:action="@{/machines/admin/{id}/request(id=${machine.id})}" method="post">
+        <button type="submit">점검 요청</button>
+    </form>
+</div>
+
+<div th:if="${machine.status.name() != 'NORMAL'}">
+    <p>점검 요청 불가 상태</p>
+</div>
+
+<a th:href="@{/machines/list}">목록으로</a>
+</body>
+</html>
