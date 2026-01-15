@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>점검 목록</title>
+</head>
+<body>
+
+<h2>점검 목록</h2>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>기계</th>
+        <th>상태</th>
+        <th>점검자</th>
+        <th>상세</th>
+    </tr>
+
+    <tr th:each="i : ${list}">
+        <td th:text="${i.id}"></td>
+        <td th:text="${i.machineName}"></td>
+        <td th:text="${i.status}"></td>
+        <td th:text="${i.userName} ?: '-'"></td>
+        <td>
+            <a th:href="@{/inspections/{id}(id=${i.id})}">보기</a>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

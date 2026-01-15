@@ -32,6 +32,6 @@ public class UserController {
 	@PostMapping
 	public String userCreate(@ModelAttribute UserRequestDto userRequestDto) {
 		userService.createUser(userRequestDto);
-		return "redirect:/users/create";
+		return "redirect:/login";
 	}
 }

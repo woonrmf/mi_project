@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>점검 상세</title>
+</head>
+<body>
+
+<h2>점검 상세</h2>
+
+<p>기계명: <span th:text="${inspection.machineName}"></span></p>
+<p>기계코드: <span th:text="${inspection.mCode}"></span></p>
+<p>점검 상태: <span th:text="${inspection.status}"></span></p>
+<p>점검자: <span th:text="${inspection.userName} ?: '-'"></span></p>
+<p>메모: <span th:text="${inspection.memo} ?: '-'"></span></p>
+
+<hr>
+
+<!-- 점검 시작 -->
+<div th:if="${inspection.status.name() == 'READY'}">
+    <form th:action="@{/inspections/{id}/start(id=${inspection.id})}" method="post">
+        <button type="submit">점검 시작</button>
+    </form>
+</div>
+
+<!-- 점검 완료 -->
+<div th:if="${inspection.status.name() == 'IN_PROGRESS'}">
+    <form th:action="@{/inspections/{id}/end(id=${inspection.id})}" method="post">
+        <textarea name="memo" placeholder="점검 메모"></textarea><br>
+        <button type="submit">점검 완료</button>
+    </form>
+</div>
+
+<a href="/inspections/list">목록으로</a>
+
+</body>
+</html>
