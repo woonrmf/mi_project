@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	  th:fragment="layout(content)">
+
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title} ?: '기계 점검 관리 시스템'">기계 점검 시스템</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" th:href="@{/bootstrap.css}">
+    <!-- Admin CSS -->
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+
+<body>
+	<div th:replace="main/navbar :: navbar"></div>
+	
+	<main class="container my-4">
+	    <div th:replace="${content}"></div>
+	</main>
+	
+	<footer class="text-center text-muted py-3 small">
+	    Machine Inspection System
+	</footer>
+</body>
+</html>

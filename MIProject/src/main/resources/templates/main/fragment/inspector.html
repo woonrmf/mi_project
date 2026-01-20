@@ -1,0 +1,37 @@
+<div th:fragment="inspector">
+
+    <h3 class="mb-4">점검 대상 기계</h3>
+
+    <div class="alert alert-info"
+         th:if="${#maps.isEmpty(mMap)}">
+        점검 대상 기계가 없습니다.
+    </div>
+
+    <div th:each="entry : ${mMap}">
+        <h5 class="mt-4">📍 [[${entry.key}]]</h5>
+
+        <div class="row">
+            <div class="col-md-4 mb-3"
+                 th:each="machine : ${entry.value}"
+                 th:if="${machine.status.name() == 'NEED_INSPECTION'}">
+
+                <div class="card border-warning shadow-sm h-100">
+                    <div class="card-body">
+                        <h6 th:text="${machine.name}"></h6>
+
+                        <p class="small text-muted">
+                            코드: [[${machine.mCode}]]<br>
+                            상태: 점검 필요
+                        </p>
+
+                        <a th:href="@{/machines/{id}(id=${machine.id})}"
+                           class="btn btn-sm btn-warning">
+                            점검 시작
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

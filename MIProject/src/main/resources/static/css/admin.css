@@ -1,0 +1,60 @@
+/* ===== 관리자 공통 ===== */
+.admin-title {
+    letter-spacing: -0.5px;
+}
+
+.admin-card {
+    border-radius: 12px;
+}
+
+.admin-summary-icon {
+    font-size: 1.8rem;
+    opacity: 0.7;
+}
+
+/* ===== 상태 배지 ===== */
+.badge-status {
+    min-width: 90px;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.badge-normal {
+    background-color: #198754;
+}
+
+.badge-inspection {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge-etc {
+    background-color: #adb5bd;
+}
+
+/* ===== 구역 헤더 ===== */
+.area-header {
+    background: linear-gradient(90deg, #f8f9fa, #e9ecef);
+}
+
+/* ===== 테이블 ===== */
+.machine-table th {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: #6c757d;
+}
+
+.machine-table td {
+    vertical-align: middle;
+}
+
+/* ===== 버튼 ===== */
+.btn-inspection {
+    font-weight: 600;
+}
+
+/* ===== 빈 데이터 ===== */
+.empty-box {
+    background-color: #fff3cd;
+    border-left: 6px solid #ffc107;
+}
