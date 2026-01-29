@@ -7,6 +7,8 @@ import lombok.Setter;
 @Setter
 public class ResultRequestDto {
 	
+	private Integer inspectionId;
+	private Integer standardId;
 	private ResultStatus status;
 	private String memo;
 }

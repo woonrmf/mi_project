@@ -1,36 +1,178 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
+    <meta charset="UTF-8">
     <title>점검 상세</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.css" rel="stylesheet">
 </head>
-<body>
 
-<h2>점검 상세</h2>
+<body class="bg-light">
 
-<p>기계명: <span th:text="${inspection.machineName}"></span></p>
-<p>기계코드: <span th:text="${inspection.mCode}"></span></p>
-<p>점검 상태: <span th:text="${inspection.status}"></span></p>
-<p>점검자: <span th:text="${inspection.userName} ?: '-'"></span></p>
-<p>메모: <span th:text="${inspection.memo} ?: '-'"></span></p>
+<div th:replace="~{main/navbar :: navbar}"></div>
 
-<hr>
+<div class="container py-5" style="max-width: 900px">
 
-<!-- 점검 시작 -->
-<div th:if="${inspection.status.name() == 'READY'}">
-    <form th:action="@{/inspections/{id}/start(id=${inspection.id})}" method="post">
-        <button type="submit">점검 시작</button>
-    </form>
+    <h3 class="mb-4 text-center">점검 상세</h3>
+
+    <!-- ================= 점검 정보 ================= -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+
+            <div class="mb-2">
+                <strong>기계명:</strong>
+                <span th:text="${inspection.machineName}"></span>
+            </div>
+
+            <div class="mb-2">
+                <strong>위치:</strong>
+                <span th:text="${inspection.machineLocation}"></span>
+            </div>
+
+            <div class="mb-2">
+                <strong>상태:</strong>
+
+                <span class="badge bg-secondary"
+                      th:if="${inspection.status.name() == 'READY'}">
+                    점검 대기
+                </span>
+
+                <span class="badge bg-primary"
+                      th:if="${inspection.status.name() == 'IN_PROGRESS'}">
+                    점검 중
+                </span>
+
+                <span class="badge bg-success"
+                      th:if="${inspection.status.name() == 'COMPLETED'}">
+                    점검 완료
+                </span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ================= 점검 시작 ================= -->
+    <div class="card shadow mb-4"
+         th:if="${inspection.status.name() == 'READY'}">
+        <div class="card-body text-center">
+            <form th:action="@{/inspections/start/{id}(id=${inspection.id})}"
+                  method="post"
+                  sec:authorize="isAuthenticated()">
+                <button class="btn btn-warning">
+                    점검 시작
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= 점검 결과 입력 ================= -->
+    <div class="card shadow mb-4"
+         th:if="${inspection.status.name() != 'READY'}">
+        <div class="card-body">
+
+            <h5 class="mb-3">점검 기준별 결과</h5>
+
+            <table class="table table-bordered align-middle text-center">
+                <thead class="table-light">
+                <tr>
+                    <th style="width: 25%">점검 기준</th>
+                    <th style="width: 20%">결과</th>
+                    <th>메모</th>
+                    <th style="width: 10%">저장</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="result : ${resultList}">
+                    <form th:action="@{/results/modify/{id}(id=${result.id})}"
+                          method="post">
+
+                        <!-- 기준명 -->
+                        <td th:text="${result.standardName}"></td>
+
+                        <!-- 결과 상태 -->
+                        <td>
+                            <select name="status"
+                                    class="form-select form-select-sm"
+                                    th:disabled="${inspection.status.name() != 'IN_PROGRESS'}">
+                                <option th:value="PASS"
+                                        th:selected="${result.status.name() == 'PASS'}">
+                                    통과
+                                </option>
+                                <option th:value="FAIL"
+                                        th:selected="${result.status.name() == 'FAIL'}">
+                                    수리 필요
+                                </option>
+                                <option th:value="NEED_CHECK"
+                                        th:selected="${result.status.name() == 'NEED_CHECK'}">
+                                    보류
+                                </option>
+                            </select>
+                        </td>
+
+                        <!-- 메모 -->
+                        <td>
+                            <input type="text"
+                                   name="memo"
+                                   class="form-control form-control-sm"
+                                   th:value="${result.memo}"
+                                   th:readonly="${inspection.status.name() != 'IN_PROGRESS'}">
+                        </td>
+
+                        <!-- hidden -->
+                        <input type="hidden" name="inspectionId"
+                               th:value="${inspection.id}">
+
+                        <!-- 저장 버튼 -->
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary"
+                                    th:if="${inspection.status.name() == 'IN_PROGRESS'}">
+                                저장
+                            </button>
+
+                            <span class="text-muted small"
+                                  th:if="${inspection.status.name() != 'IN_PROGRESS'}">
+                                완료
+                            </span>
+                        </td>
+
+                    </form>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <!-- ================= 점검 완료 ================= -->
+    <div class="card shadow mb-4"
+         th:if="${inspection.status.name() == 'IN_PROGRESS'}">
+        <div class="card-body text-center">
+            <form th:action="@{/inspections/end/{id}(id=${inspection.id})}"
+                  method="post">
+                <button class="btn btn-success">
+                    점검 완료
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= 완료 상태 ================= -->
+    <div class="card shadow mb-4"
+         th:if="${inspection.status.name() == 'COMPLETED'}">
+        <div class="card-body">
+            <h5>점검 메모</h5>
+            <p th:text="${inspection.memo}" class="text-muted"></p>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <a th:href="@{/inspections/list}" class="text-decoration-none">
+            ← 점검 목록으로
+        </a>
+    </div>
+
 </div>
-
-<!-- 점검 완료 -->
-<div th:if="${inspection.status.name() == 'IN_PROGRESS'}">
-    <form th:action="@{/inspections/{id}/end(id=${inspection.id})}" method="post">
-        <textarea name="memo" placeholder="점검 메모"></textarea><br>
-        <button type="submit">점검 완료</button>
-    </form>
-</div>
-
-<a href="/inspections/list">목록으로</a>
 
 </body>
 </html>

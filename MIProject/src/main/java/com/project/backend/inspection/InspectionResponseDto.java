@@ -17,16 +17,26 @@ public class InspectionResponseDto {
 	private String role;
 	private String machineName;
 	private String mCode;
+	private String machineLocation;
 	
 	public static InspectionResponseDto from(Inspection inspection) {
+		String userName = null;
+	    String role = null;
+
+	    if (inspection.getUser() != null) {
+	        userName = inspection.getUser().getName();
+	        role = inspection.getUser().getRole().name();
+	    }
+	    
 		return new InspectionResponseDto(
 				inspection.getId(),
 				inspection.getMemo(), 
 				inspection.getStatus(), 
 				inspection.getInspectionDate(), 
-				inspection.getUser().getName(),
-				inspection.getUser().getRole().name(),
+				userName,
+				role,
 				inspection.getMachine().getName(),
-				inspection.getMachine().getMCode());
+				inspection.getMachine().getMCode(),
+				inspection.getMachine().getLocation());
 	}
 }

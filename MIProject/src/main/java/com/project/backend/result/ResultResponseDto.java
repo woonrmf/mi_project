@@ -10,6 +10,7 @@ public class ResultResponseDto {
 	private Integer id;
 	private ResultStatus status;
 	private String memo;
+	private Integer standardId;
 	private String standardName;
 	private Integer inspectionId;
 	
@@ -18,6 +19,7 @@ public class ResultResponseDto {
 				result.getId(), 
 				result.getStatus(), 
 				result.getMemo(),
+				result.getStandard().getId(),
 				result.getStandard().getName(),
 				result.getInspection().getId());
 	}

@@ -1,6 +1,8 @@
 package com.project.backend.machine;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -25,7 +27,10 @@ public class MachineController {
 	@GetMapping("/list")
 	public String getList(Model model) {
 		List<MachineResponseDto> mList = machineService.machineList();
-		model.addAttribute("mList", mList);
+		
+		Map<String, List<MachineResponseDto>> mMap = mList.stream().collect(Collectors.groupingBy(MachineResponseDto::getLocation));
+		
+		model.addAttribute("mMap", mMap);
 		return "machine/list";
 	}
 	
@@ -47,7 +52,7 @@ public class MachineController {
 	@PreAuthorize("hasRole('ADMIN')")
 	public String createMachine(@ModelAttribute MachineRequestDto dto) {
 		machineService.createMachine(dto);
-		return "redirect:/machines/list";
+		return "redirect:/";
 	}
 	
 	@PostMapping("/admin/{id}")

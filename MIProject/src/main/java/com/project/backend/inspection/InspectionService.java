@@ -9,7 +9,10 @@ import com.project.backend.machine.Machine;
 import com.project.backend.machine.MachineRepository;
 import com.project.backend.machine.MachineStatus;
 import com.project.backend.result.Result;
+import com.project.backend.result.ResultRepository;
 import com.project.backend.result.ResultStatus;
+import com.project.backend.standard.Standard;
+import com.project.backend.standard.StandardRepository;
 import com.project.backend.user.User;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,8 @@ public class InspectionService {
 
 	private final InspectionRepository inspectionRepository;
 	private final MachineRepository machineRepository;
+	private final StandardRepository standardRepository;
+	private final ResultRepository resultRepository;
 	
 	public List<InspectionResponseDto> getList() {
 		return inspectionRepository.findAll().stream().map(InspectionResponseDto::from).toList();
@@ -35,6 +40,12 @@ public class InspectionService {
 	public InspectionResponseDto createInspection(Integer machineId) {
 		Machine machine = machineRepository.findById(machineId).orElseThrow(() -> new IllegalArgumentException("해당 기계를 찾을 수 없습니다."));
 		
+		boolean exists = inspectionRepository.existsByMachineIdAndStatusIn(machineId, List.of(InspectionStatus.READY, InspectionStatus.IN_PROGRESS));
+
+		    if (exists) {
+		        throw new IllegalStateException("이미 생성된 점검이 있습니다.");
+		    }
+		
 		if(machine.getStatus() != MachineStatus.NEED_INSPECTION) {
 			throw new IllegalStateException("점검 대상이 아닙니다.");
 		}
@@ -42,6 +53,7 @@ public class InspectionService {
 		Inspection inspection = new Inspection();
 		inspection.setMachine(machine);
 		inspection.setStatus(InspectionStatus.READY);
+		inspection.setMemo("");
 		
 		inspectionRepository.save(inspection);
 		return InspectionResponseDto.from(inspection);
@@ -60,6 +72,17 @@ public class InspectionService {
 		inspection.setStatus(InspectionStatus.IN_PROGRESS);
 		inspection.setUser(user);
 		machine.setStatus(MachineStatus.INSPECTION);
+		
+		List<Standard> standardList = standardRepository.findAll();
+		
+		for(Standard standard : standardList) {
+			Result result = new Result();
+			result.setInspection(inspection);
+			result.setStandard(standard);
+			result.setStatus(ResultStatus.NEED_CHECK);
+			result.setMemo("");
+			resultRepository.save(result);
+		}
 	}
 	
 	//점검 완료
@@ -73,6 +96,24 @@ public class InspectionService {
 		inspection.setMemo(dto.getMemo());
 		inspection.setStatus(InspectionStatus.COMPLETED);
 		
+		List<Standard> standardList = standardRepository.findAll();
+
+		for (Standard standard : standardList) {
+			// 혹시 모를 중복 방지
+			boolean exists = resultRepository
+					.findByInspectionIdAndStandardId(inspection.getId(), standard.getId())
+					.isPresent();
+
+			if (!exists) {
+				Result result = new Result();
+				result.setInspection(inspection);
+				result.setStandard(standard);
+				result.setStatus(null);
+				result.setMemo(null);
+				resultRepository.save(result);
+			}
+		}
+		
 		machineStatusByResult(inspection);
 	}
 	
@@ -83,6 +124,11 @@ public class InspectionService {
 		
 		if(resultList == null || resultList.isEmpty()) {
 			throw new IllegalStateException("점검 결과가 없습니다.");
+		}
+		
+		long standardCount = standardRepository.count();
+		if(resultList.size() != standardCount) {
+			throw new IllegalStateException("점검 기준에 대한 결과를 모두 입력해주세요");
 		}
 		
 		boolean fail = resultList.stream().anyMatch(r -> r.getStatus() == ResultStatus.FAIL);

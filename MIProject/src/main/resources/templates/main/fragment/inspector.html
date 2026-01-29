@@ -13,7 +13,8 @@
         <div class="row">
             <div class="col-md-4 mb-3"
                  th:each="machine : ${entry.value}"
-                 th:if="${machine.status.name() == 'NEED_INSPECTION'}">
+                 th:if="${machine.status.name() == 'NEED_INSPECTION' 
+                      or machine.status.name() == 'INSPECTION'}">
 
                 <div class="card border-warning shadow-sm h-100">
                     <div class="card-body">
@@ -21,13 +22,32 @@
 
                         <p class="small text-muted">
                             코드: [[${machine.mCode}]]<br>
-                            상태: 점검 필요
+                            기계 상태: [[${machine.status}]]
                         </p>
 
-                        <a th:href="@{/machines/{id}(id=${machine.id})}"
-                           class="btn btn-sm btn-warning">
-                            점검 시작
-                        </a>
+                        <!-- 🔴 점검중 -->
+                        <button class="btn btn-sm btn-secondary"
+                                th:if="${machine.inspectionStatus?.name() == 'IN_PROGRESS'}"
+                                disabled>
+                            점검중
+                        </button>
+
+                        <!-- 🟡 점검 생성 완료 (READY) -->
+                        <button class="btn btn-sm btn-secondary"
+                                th:if="${machine.inspectionStatus?.name() == 'READY'}"
+                                disabled>
+                            점검 생성 완료
+                        </button>
+
+                        <!-- 🟢 점검 생성 가능 -->
+                        <form th:if="${machine.inspectionStatus == null}"
+                              th:action="@{/inspections/create/{id}(id=${machine.id})}"
+                              method="post">
+                            <button class="btn btn-sm btn-warning">
+                                점검 생성
+                            </button>
+                        </form>
+
                     </div>
                 </div>
             </div>
