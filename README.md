@@ -35,3 +35,10 @@
     - result : pass
     - machine : normal
 
+## 샘플 이미지
+
+### 관리자 페이지
+- 기계 등록, 수정, 점검 요청
+<p align="left">
+  <img src="images/adminSamplePage.jpg" alt="adminPage" width="800">
+</p>
